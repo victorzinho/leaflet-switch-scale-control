@@ -32,6 +32,22 @@ L.Control.SwitchScaleControl = L.Control.extend({
     // Returns width of map in meters on specified latitude.
     getMapWidthForLanInMeters: function (currentLan) {
       return 6378137 * 2 * Math.PI * Math.cos(currentLan * Math.PI / 180);
+    },
+
+    render: function (ratio) {
+      var scaleRatioText = ratio.toString();
+      // 1500000 -> 1'500'000
+      if (scaleRatioText.length > 3) {
+        var joinerChar = '\'';
+        scaleRatioText = scaleRatioText.split('').reverse().join('').replace(/([0-9]{3})/g, '$1' + joinerChar);
+        if (scaleRatioText[scaleRatioText.length - 1] === joinerChar) {
+          scaleRatioText = scaleRatioText.slice(0, -1);
+        }
+
+        scaleRatioText = scaleRatioText.split('').reverse().join('');
+      }
+
+      return this.options.ratioPrefix + scaleRatioText;
     }
   },
 
@@ -93,20 +109,7 @@ L.Control.SwitchScaleControl = L.Control.extend({
   _addScale(ratio) {
     var menuitem = L.DomUtil.create('div', this.options.className + '-scale-item', this.dropdown);
 
-    var scaleRatioText = ratio.toString();
-
-    // 1500000 -> 1'500'000
-    if (scaleRatioText.length > 3) {
-      var joinerChar = '\'';
-      scaleRatioText = scaleRatioText.split('').reverse().join('').replace(/([0-9]{3})/g, '$1' + joinerChar);
-      if (scaleRatioText[scaleRatioText.length - 1] === joinerChar) {
-        scaleRatioText = scaleRatioText.slice(0, -1);
-      }
-
-      scaleRatioText = scaleRatioText.split('').reverse().join('');
-    }
-
-    menuitem.innerHTML = this.options.ratioPrefix + scaleRatioText;
+    menuitem.innerHTML = this.render(ratio);
 
     var setScale = this._setScale.bind(this);
     menuitem.addEventListener('click', function () {
@@ -206,11 +209,11 @@ L.Control.SwitchScaleControl = L.Control.extend({
 
   _updateRatio: function (physicalScaleRatio, isRound) {
     if (this._fixedScale) {
-      this.text.innerHTML = this.options.ratioPrefix + this._fixedScale;
+      this.text.innerHTML = this.options.render.call(this, this._fixedScale);
       this._fixedScale = null;
     } else {
       var scaleText = isRound ? this._roundScale(physicalScaleRatio) : Math.round(physicalScaleRatio);
-      this.text.innerHTML = this.options.ratioPrefix + scaleText;
+      this.text.innerHTML = this.options.render.call(this, scaleText);
     }
   },
 
