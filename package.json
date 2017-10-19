@@ -5,8 +5,7 @@
 	"license": "MIT",
 	"main": "src/L.Control.SwitchScaleControl.js",
 	"dependencies": {
-		"leaflet": "^1.0.0",
-		"semantic-ui": "^2.2.4"
+		"leaflet": "^1.0.0"
 	},
 	"devDependencies": {
 		"babel-eslint": "^7.2.1",
