@@ -1,3 +1,6 @@
+var L = require('leaflet');
+var $ = require('jquery');
+
 L.Control.SwitchScaleControl = L.Control.extend({
   options: {
     position: 'bottomleft',
@@ -190,7 +193,7 @@ L.Control.SwitchScaleControl = L.Control.extend({
           direction: _this.options.dropdownDirection,
           onShow: function () {
             _this.onDropdownShow.call(_this);
-          },
+          }
         });
       }
     }
@@ -257,5 +260,5 @@ L.Control.SwitchScaleControl = L.Control.extend({
     }
 
     return Math.round(physicalScaleRatio);
-  },
+  }
 });
