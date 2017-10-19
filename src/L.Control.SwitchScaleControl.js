@@ -109,7 +109,7 @@ L.Control.SwitchScaleControl = L.Control.extend({
   _addScale(ratio) {
     var menuitem = L.DomUtil.create('div', this.options.className + '-scale-item', this.dropdown);
 
-    menuitem.innerHTML = this.render(ratio);
+    menuitem.innerHTML = this.options.render(ratio);
 
     var setScale = this._setScale.bind(this);
     menuitem.addEventListener('click', function () {
