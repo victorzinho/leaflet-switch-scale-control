@@ -91,7 +91,6 @@ L.Control.SwitchScaleControl = L.Control.extend({
   },
 
   _setScale: function (ratio) {
-    this._fixedScale = ratio;
     var map = this._map;
     var bounds = map.getBounds();
     var centerLat = bounds.getCenter().lat;
@@ -108,9 +107,7 @@ L.Control.SwitchScaleControl = L.Control.extend({
 
   _addScale(ratio) {
     var menuitem = L.DomUtil.create('div', this.options.className + '-scale-item', this.dropdown);
-
     menuitem.innerHTML = this.options.render(ratio);
-
     var setScale = this._setScale.bind(this);
     menuitem.addEventListener('click', function () {
       setScale(ratio);
@@ -184,37 +181,18 @@ L.Control.SwitchScaleControl = L.Control.extend({
   },
 
   _updateFunction: function (isRound) {
-    var bounds = this._map.getBounds();
-    var options = this.options;
-
-    var centerLat = bounds.getCenter().lat;
-
-    var size = this._map.getSize();
-    var physicalScaleRatio = 0;
-
-    if (size.x > 0) {
-      if (options.ratio) {
-        physicalScaleRatio = this._pixelsInMeterWidth * options.getMapWidthForLanInMeters(centerLat) / this._map.options.crs.scale(this._map.getZoom());
-      }
-    }
-
-    this._updateScales(options, physicalScaleRatio, isRound);
-  },
-
-  _updateScales: function (options, physicalScaleRatio, isRound) {
-    if (options.ratio && physicalScaleRatio) {
-      this._updateRatio(physicalScaleRatio, isRound);
+    if (this._map.getSize().x > 0 && this.options.ratio) {
+      var bounds = this._map.getBounds();
+      var centerLat = bounds.getCenter().lat;
+      var mapWidth = this.options.getMapWidthForLanInMeters(centerLat);
+      var ratio = this._pixelsInMeterWidth * mapWidth / this._map.options.crs.scale(this._map.getZoom());
+      this._updateRatio(ratio, isRound);
     }
   },
 
   _updateRatio: function (physicalScaleRatio, isRound) {
-    if (this._fixedScale) {
-      this.text.innerHTML = this.options.render.call(this, this._fixedScale);
-      this._fixedScale = null;
-    } else {
-      var scaleText = isRound ? this._roundScale(physicalScaleRatio) : Math.round(physicalScaleRatio);
-      this.text.innerHTML = this.options.render.call(this, scaleText);
-    }
+    var scaleText = isRound ? this._roundScale(physicalScaleRatio) : Math.round(physicalScaleRatio);
+    this.text.innerHTML = this.options.render.call(this, scaleText);
   },
 
   _roundScale: function (physicalScaleRatio) {
