@@ -12,7 +12,6 @@
     "bower_components"
   ],
   "dependencies": {
-    "leaflet": "1.0.1",
-    "semantic-ui": "^2.2.4"
+    "leaflet": "1.0.1"
   }
 }
